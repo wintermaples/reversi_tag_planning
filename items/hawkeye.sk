@@ -1,0 +1,42 @@
+on rightclick holding a heart of the sea:
+  if clicked entity is not set:
+    if name of event-item contains "ホークアイ":
+      if {pv.cooldown.%entity%::hawkeye} is not set:
+        set {pv.cooldown.%entity%::hawkeye} to {HAWKEYE_COOLDOWN}
+        set {_angle} to -60
+        loop 24 times:
+          spawn an armor stand at location of the entity
+          add "HAWKEYE_CLICKED" to the scoreboard tags of the entity
+          add "hawkeye_particle" to the scoreboard tags of the last spawned entity
+          set {_name} to the UUID of the last spawned entity
+          set {_x} to x-coordinate of the last spawned entity
+          set {_y} to y-coordinate of the last spawned entity
+          set {_z} to z-coordinate of the last spawned entity
+          set {_world} to world of the last spawned entity
+          set {_yaw} to yaw of the last spawned entity's location
+          set {_pitch} to pitch of the last spawned entity
+          teleport the last spawned entity to location({_x},{_y},{_z},{_world},{_yaw} + {_angle},0)
+          set the name of the last spawned entity to {_name}
+          execute the console command "data modify entity @e[name=%{_name}%,limit=1] Invisible set value 1b"
+          execute the console command "data modify entity @e[name=%{_name}%,limit=1] Marker set value 1b"
+          execute the console command "data modify entity @e[name=%{_name}%,limit=1] NoGravity set value 1b"
+          add 5 to {_angle}
+      
+        loop all players:
+          if loop-player is not the entity:
+            if the distance between loop-player and the entity is smaller than 100:
+              set {_x1} to x-coordinate of the entity
+              set {_z1} to z-coordinate of the entity
+              set {_yaw1} to yaw of the entity
+              set {_x2} to x-coordinate of loop-player
+              set {_z2} to z-coordinate of loop-player
+              set {_yaw2} to yaw of loop-player
+              
+              set {_v1} to vector {_x1}, 0, {_z1}
+              set {_v2} to vector {_x2}, 0, {_z2}
+              set {_v} to normalized ({_v2} -- {_v1})
+              set {_yaw_v} to vector from yaw {_yaw} and pitch 0
+              set {_angle} to acos({_v} dot {_yaw_v})
+              
+              if {_angle} is less than 60:
+                apply potion of glowing without particles to loop-player for 5 seconds

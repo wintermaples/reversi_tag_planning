@@ -1,0 +1,33 @@
+on rightclick holding a bowl:
+  if clicked entity is not set:
+    if name of event-item contains "袋":
+      if {pv.cooldown.%entity%::bag} is not set:
+        set {_nearestPlayer} to nearestPlayer(event-player)
+        if the distance between {_nearestPlayer} and event-player is smaller than 20:
+          open chest inventory to event-player
+          reset {_inv::*}
+          loop all items in {_nearestPlayer}'s inventory:
+            add loop-item to {_inv::*}
+          set the name of the open inventory to "StealBag"
+
+          loop {_inv::*}:
+            add loop-value to the open inventory
+
+on inventory click:
+  if the name of event-inventory is "StealBag":
+    if event-inventory is not the player's inventory:
+      set {_item} to event-slot
+      if the name of {_item} is set:
+        set the player's tool to air
+        set the name of {_item} to "%the name of {_item}%(Copied)"
+        add {_item} to the player's inventory
+        close the player's inventory
+    cancel event
+
+on click:
+  if clicked entity is not set:
+    if the name of event-item contains "Copied":
+      remove event-item from event-player
+      cancel event # Preventing to throw exception
+      add a bowl named "袋" to event-player
+      set {pv.cooldown.%entity%::bag} to {BAG_COOLDOWN}

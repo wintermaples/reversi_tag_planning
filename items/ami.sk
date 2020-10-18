@@ -1,0 +1,6 @@
+on rightclick holding a string:
+  if clicked entity is not set:
+    if name of event-item contains "網":
+      if {pv.cooldown.%entity%::ami} is not set:
+        set {pv.cooldown.%entity%::ami} to {AMI_COOLDOWN}
+        add "AMI_CLICKED" to the scoreboard tags of the entity

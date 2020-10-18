@@ -1,0 +1,51 @@
+on leftclick holding a lead:
+  if clicked entity is not set:
+    if name of event-item contains "鉤縄":
+      if {pv.cooldown.%entity%::kaginawa} is not set:
+        set {pv.cooldown.%entity%::kaginawa} to {KAGINAWA_COOLDOWN}
+        make the entity shoot an arrow at speed 2
+        add "HOOKTURIZAO_%entity%" to the scoreboard tags of the shot projectile
+
+on rightclick holding a lead:
+  if clicked entity is not set:
+    if name of event-item contains "鉤縄":
+      if {pv.cooldown.%entity%::kaginawa} is not set:
+        set {pv.cooldown.%entity%::kaginawa} to {KAGINAWA_COOLDOWN}
+        make the entity shoot an arrow
+        add "TURIZAO_%entity%" to the scoreboard tags of the shot projectile
+
+on rightclick holding an arrow:
+  if clicked entity is not set:
+    if name of event-item contains "運命の矢":
+      if {pv.cooldown.%entity%::destiny_arrow} is not set:
+        set {pv.cooldown.%entity%::destiny_arrow} to {DESTINY_ARROW_COOLDOWN}
+        make the entity shoot an arrow
+        add "TURIZAO_%entity%" to the scoreboard tags of the shot projectile
+
+on damage:
+  if "%damage cause%" is "projectile":
+    if the projectile has the scoreboard tag "TURIZAO_%the attacker%":
+      cancel event
+      set {_x} to x-coordinate of attacked
+      set {_y} to y-coordinate of attacked
+      set {_z} to z-coordinate of attacked
+      set {_world} to world of attacked
+      set {_distance} to sqrt((x-coordinate of attacker - {_x}) * (x-coordinate of attacker - {_x}) + (z-coordinate of attacker - {_z}) * (z-coordinate of attacker - {_z}))
+      set {_yaw} to atan2(z-coordinate of attacker - {_z}, (x-coordinate of attacker - {_x}) * (-1))
+      set {_pitch} to atan2({_distance}, (y-coordinate of attacker - {_y}) * (-1))
+      teleport attacked to location({_x}, {_y}, {_z}, {_world}, {_yaw}, {_pitch})
+      wait 1 ticks
+      push attacked forwards at speed {_distance} / 5
+
+on projectile hit:
+  if the projectile has the scoreboard tag "HOOKTURIZAO_%the shooter of the projectile%":
+    set {_x} to x-coordinate of the shooter of the projectile
+    set {_y} to y-coordinate of the shooter of the projectile
+    set {_z} to z-coordinate of the shooter of the projectile
+    set {_world} to world of the shooter of the projectile
+    set {_distance} to sqrt((x-coordinate of the projectile - {_x}) * (x-coordinate of the projectile - {_x}) + (z-coordinate of the projectile - {_z}) * (z-coordinate of the projectile - {_z}))
+    set {_yaw} to atan2(z-coordinate of the projectile - {_z}, (x-coordinate of the projectile - {_x}) * (-1))
+    set {_pitch} to atan2({_distance}, (y-coordinate of the projectile - {_y}) * (-1))
+    teleport the shooter of the projectile to location({_x}, {_y}, {_z}, {_world}, {_yaw}, {_pitch})
+    wait 1 ticks
+    push the shooter of the projectile forwards at speed {_distance} / 5

@@ -1,0 +1,4 @@
+every 10 seconds:
+  loop all players:
+    if the name of loop-player's off hand tool is "盾":
+      apply potion of resistance of tier 1 without particles to loop-player for "%{SHIELD_DURATION}% ticks" parsed as a timespan replacing the existing effect

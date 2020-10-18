@@ -1,0 +1,25 @@
+on rightclick holding a trident:
+  if clicked entity is not set:
+    if name of event-item contains "羅針盤":
+      if {pv.cooldown.%entity%::compass} is not set:
+        set {pv.cooldown.%entity%::compass} to {COMPASS_COOLDOWN}
+        play sound "block.portal.travel" with volume 0.25 to event-entity
+        set {_v1} to vector from event-entity's location
+        set {_v2} to vector from nearestMonument(event-entity's location)
+        set {_v} to {_v2} -- {_v1}
+
+        spawn an area effect cloud at location of the entity
+        add "compass_particle" to the scoreboard tags of the last spawned entity
+        set {_name} to the UUID of the last spawned entity
+        set the name of the last spawned entity to {_name}
+
+        set {_x} to x-coordinate of the last spawned entity's location
+        set {_y} to y-coordinate of the last spawned entity's location
+        set {_z} to z-coordinate of the last spawned entity's location
+        set {_world} to world of the last spawned entity's location
+        teleport the last spawned entity to location({_x},{_y},{_z},{_world},vector yaw of {_v}, vector pitch of {_v})
+        
+        execute the console command "data modify entity @e[name=%{_name}%,limit=1] Duration set value 20b"
+        execute the console command "data modify entity @e[name=%{_name}%,limit=1] Particle set value ""block air"""
+
+    cancel event

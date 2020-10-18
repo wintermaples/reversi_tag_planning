@@ -1,0 +1,28 @@
+on hunger meter change:
+  set food level of the player to 5
+
+on projectile hit:
+  if the projectile is arrow:
+    delete the projectile
+
+on shoot:
+  if the shooter's tool is crossbow:
+    add 1 arrow to the shooter
+
+# ########## ドロップ・アイテム入れ替え防止 ##########
+on inventory click:
+  if player's gamemode is not creative:
+    cancel event
+
+on drop:
+  if player's gamemode is not creative:
+    delete entity
+# ####################
+
+every 43 seconds:
+  reset {_players::*}
+  loop all players:
+    if loop-player's world is not "world":
+      add loop-player to {_players::*}
+  
+  play sound "ambient.basalt_deltas.loop" in ambient category for {_players::*}

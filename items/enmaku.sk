@@ -1,0 +1,14 @@
+on rightclick holding a gunpowder:
+  if clicked entity is not set:
+    if name of event-item contains "煙幕":
+      if {pv.cooldown.%entity%::enmaku} is not set:
+        set {pv.cooldown.%entity%::enmaku} to {ENMAKU_COOLDOWN}
+        apply potion of invisibility without particles to the entity for "%{ENMAKU_DURATION}% ticks" parsed as a timespan replacing the existing effect
+        apply potion of weakness of tier 3 without particles to the entity for "%{ENMAKU_DURATION}% ticks" parsed as a timespan replacing the existing effect
+        apply potion of speed tier 2 without particles to the entity for "%{ENMAKU_SPEED_DURATION}% ticks" parsed as a timespan replacing the existing effect
+        play sound "entity.enderman.teleport" with volume 3.0 and pitch 1.5 at location of the entity
+        add "ENMAKU_CLICKED" to the scoreboard tags of the entity
+
+        hide event-entity
+        wait "%{ENMAKU_DURATION}% ticks" parsed as a timespan
+        reveal event-entity

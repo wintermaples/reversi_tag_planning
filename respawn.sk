@@ -1,0 +1,9 @@
+on respawn:
+  set {_v} to (a random vector ++ vector -0.5,-0.5,-0.5)
+  set {_v} to normalized {_v}
+  set {_x} to -152 + (x component of {_v} * random number from 0 to 150)
+  set {_y} to 36
+  set {_z} to -225 + (z component of {_v} * random number from 0 to 150)
+  # set {_loc} to location({_x}, {_y}, {_z}, the world of location of the player, 0, 0)
+  set {_loc} to location({_x}, {_y}, {_z}, "odd" parsed as a world, 0, 0)
+  set respawn location to {_loc}

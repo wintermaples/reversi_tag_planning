@@ -1,0 +1,180 @@
+function placemonument_base(loc: location):
+  add {_loc} to {monuments::*}
+
+function removemonument_base(loc: location):
+  remove {_loc} from {monuments::*}
+
+function is_monument_placable(loc: location) :: number:
+  set {_x} to x-coordinate of {_loc}
+  set {_y} to y-coordinate of {_loc}
+  set {_z} to z-coordinate of {_loc}
+  set {_world} to world of {_loc}
+
+  if the block below {_loc} is grass block:
+    return 0
+  if the block below {_loc} is water:
+    return 0
+  if the block below {_loc} is air:
+    return 0
+  if the block below {_loc} is stairs:
+    return 0
+  if the block below {_loc} is slab:
+    return 0
+  if the block below {_loc} is trapdoor:
+    return 0
+  if the block below {_loc} is sign:
+    return 0
+  if the block below {_loc} is flower:
+    return 0
+  if the block below {_loc} is leaves:
+    return 0
+  if the block below {_loc} is torch:
+    return 0
+  if the block below {_loc} is fence:
+    return 0
+  if the block below {_loc} is wheat:
+    return 0
+  if the block at location({_x}, {_y}, {_z}, {_world}) is not air:
+    return 0
+  if the block at location({_x}, {_y} + 1, {_z}, {_world}) is not air:
+    return 0
+  if the block at location({_x}, {_y} + 2, {_z}, {_world}) is not air:
+    return 0
+  
+  set {_sideblockcount} to 0
+  if the block at location({_x} + 1, {_y}, {_z}, {_world}) is not air:
+    add 1 to {_sideblockcount}
+  if the block at location({_x} - 1, {_y}, {_z}, {_world}) is not air:
+    add 1 to {_sideblockcount}
+  if the block at location({_x}, {_y}, {_z} + 1, {_world}) is not air:
+    add 1 to {_sideblockcount}
+  if the block at location({_x}, {_y}, {_z} - 1, {_world}) is not air:
+    add 1 to {_sideblockcount}
+  if {_sideblockcount} is 0:
+    return 0
+
+  return 1
+
+on walking on emerald block:
+  if event-entity's gamemode is not spectator:
+    if event-block is emerald block:
+      set block above event-block's location to air
+      set block at event-block's location to air
+      remove event-block's location from {placed_monuments::*}
+      apply potion of glowing without particles to event-entity for 5 seconds
+      broadcast "モニュメントが1つ破壊されました!"
+      execute console command "scoreboard players add @e[type=pig,name=masterpig] MonumentCounter 1"
+
+on place of emerald block:
+  set {_x} to x-coordinate of event-block
+  set {_y} to y-coordinate of event-block
+  set {_z} to z-coordinate of event-block
+  set {_world} to world of event-block
+  placemonument_base(location({_x}, {_y}, {_z}, {_world}))
+  send "Monument Base placed!(%location({_x}, {_y}, {_z}, {_world})%)" to the entity
+  
+  loop {monuments::*}:
+    if the world of loop-value is "%{_world}%":
+      add loop-value to {_wm::*}
+  
+  send "モニュメント数: %size of {_wm::*}%" to the entity
+
+on break of emerald block:
+  set {_x} to x-coordinate of event-block
+  set {_y} to y-coordinate of event-block
+  set {_z} to z-coordinate of event-block
+  set {_world} to world of event-block
+  removemonument_base(location({_x}, {_y}, {_z}, {_world}))
+  send "Monument Base removed!(%location({_x}, {_y}, {_z}, {_world})%)" to the entity
+
+  loop {monuments::*}:
+    if the world of loop-value is "%{_world}%":
+      add loop-value to {_wm::*}
+  
+  send "モニュメント数: %size of {_wm::*}%" to the entity
+
+
+command /placemonument <world> <number> <boolean>:
+  permission: sk.command.placemonument
+  trigger:
+    set {_monuments_addition} to 0
+
+    if online player count is more than 3:
+      set {_monuments_addition} to (online player count - 2) * 6
+
+    loop {monuments::*}:
+      if the world of loop-value is "%arg-1%":
+        add loop-value to {_wm::*}
+    
+    loop {_wm::*}:
+      set {_m} to loop-value
+      set {_x} to x-coordinate of {_m}
+      set {_y} to (y-coordinate of {_m}) + 1
+      set {_z} to z-coordinate of {_m}
+      set {_world} to world of {_m}
+      set {_m2} to location({_x}, {_y}, {_z}, {_world})
+      set block at {_m2} to air
+
+    set {_shuffled_wm::*}  to shuffled {_wm::*}
+    remove all locations from {placed_monuments::*}
+    
+    loop (arg-2 + {_monuments_addition}) times:
+      set {_m} to first element of {_shuffled_wm::*}
+      set {_x} to x-coordinate of {_m}
+      set {_y} to y-coordinate of {_m}
+      set {_z} to z-coordinate of {_m}
+      set {_world} to world of {_m}
+      set {_m2} to location({_x}, {_y}, {_z}, {_world})
+      set {_m3} to location({_x}, {_y} + 1, {_z}, {_world})
+      set block at {_m2} to emerald block
+      set block at {_m3} to stone pressure plate
+      add {_m} to {placed_monuments::*}
+      remove {_m} from {_shuffled_wm::*}
+      if size of {_shuffled_wm::*} is 0:
+        exit loop
+    
+    loop {_shuffled_wm::*}:
+      set block at loop-value to air
+
+    execute console command "scoreboard players set monument_num variables %arg-2 + {_monuments_addition}%"
+
+
+command /placemonument_base <number> <number>:
+  permission: sk.command.placemonument_base
+  trigger:
+    set {_i} to arg-2
+    set {_retry} to arg-2 * 200
+    while {_i} is more than 0:
+      set {_v} to (a random vector ++ vector -0.5,-0.5,-0.5)
+      set {_v} to normalized {_v}
+      set {_x} to x-coordinate of sender's location + (x component of {_v} * random number from 0 to arg-1)
+      set {_y} to y-coordinate of sender's location + (random number from -10 to 10)
+      set {_z} to z-coordinate of sender's location + (z component of {_v} * random number from 0 to arg-1)
+      set {_world} to the world of sender's location
+      set {_loc} to location(round({_x})+0.5, round({_y})+0.5, round({_z})+0.5, {_world})
+
+      if is_monument_placable({_loc}) is 1:
+        set block at {_loc} to emerald block
+        placemonument_base({_loc})
+        send "Monument Base placed!(%{_loc}%)" to the entity
+        add -1 to {_i}
+      else:
+        add -1 to {_retry}
+        if {_retry} is less than 0:
+          send "Couldn't place some monument base!"
+          stop loop
+
+
+command /removeallmonuments_base:
+  permission: sk.command.placeallmonuments_base
+  trigger:
+    loop {monuments::*}:
+      if the world of sender's location is loop-value's world:
+        add loop-value to {_wm::*}
+        wait 1 ticks
+      
+      loop {_wm::*}:
+        remove loop-value-2 from {monuments::*}
+        remove loop-value-2 from {_wm::*}
+        send "Removed: %loop-value-2% -- %size of {_wm::*}%"
+        wait 1 ticks

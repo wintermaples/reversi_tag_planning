@@ -1,0 +1,8 @@
+on rightclick holding a nether star:
+  if clicked entity is not set:
+    if name of event-item contains "モーニングスター":
+      if {pv.cooldown.%entity%::morning_star} is not set:
+        set {pv.cooldown.%entity%::morning_star} to {MORNING_STAR_COOLDOWN}
+        loop all players within 3 meters of location of the entity:
+          heal loop-player by 3 hearts
+          play sound "entity.player.levelup" with volume 0.5 and pitch 2 at location of loop-player

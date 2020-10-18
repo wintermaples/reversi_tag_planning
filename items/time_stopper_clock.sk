@@ -1,0 +1,13 @@
+on rightclick holding a clock:
+  if clicked entity is not set:
+    if name of event-item contains "時止め時計":
+      if {pv.cooldown.%entity%::time_stopper_clock} is not set:
+        set {pv.cooldown.%entity%::time_stopper_clock} to {TIME_STOPPER_CLOCK_COOLDOWN}
+        add "TIME_STOPPER_CLOCK_CLICKED" to the scoreboard tags of the entity
+        play sound "block.bell.use" at location of the entity
+        wait 0.5 seconds
+        loop 4 times:
+          play sound "block.note_block.hat" with volume 2 and pitch 1 at location of the entity
+          wait 0.5 seconds
+          play sound "block.note_block.hat" with volume 2 and pitch 0.85 at location of the entity
+          wait 0.5 seconds

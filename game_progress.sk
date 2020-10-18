@@ -1,0 +1,20 @@
+command /countdown:
+  permission: sk.command.countdown
+  trigger:
+    set {_t} to {COUNTDOWN_START_TIME_COUNT}
+    loop {COUNTDOWN_START_TIME_COUNT} times:
+      send title "%{_t}%" to all players for 0.5 seconds
+      play sound "block.note_block.pling" for all players
+      add -1 to {_t}
+      wait 1 seconds
+
+    play sound "entity.lightning_bolt.thunder" with volume 100 for all players
+
+    if block's location is set:
+      set {_location} to location(63,4,27, world of block's location, 0, 0)
+    else:
+      set {_location} to location(63,4,27, executor's world, 0, 0)
+
+    set block at {_location} to redstone_block
+    wait 1 seconds
+    set block at {_location} to air

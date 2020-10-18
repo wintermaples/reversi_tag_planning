@@ -1,0 +1,78 @@
+function nearestPlayer(p: player) :: player:
+  reset {_nearest}
+  loop all players in world of {_p}:
+    if loop-player is not {_p}:
+      if {_nearest} is not set:
+        set {_nearest} to loop-player
+        continue
+      
+      if distance between loop-player and {_p} is less than distance between {_p} and {_nearest}:
+        set {_nearest} to loop-player
+
+  return {_nearest}
+
+function nearestMonument(loc: location) :: location:
+  reset {_nearest}
+  loop {placed_monuments::*}:
+    if {_nearest} is not set:
+      set {_nearest} to loop-value
+      continue loop
+    if (the distance between {_loc} and loop-value) is less than (the distance between {_loc} and {_nearest}):
+      set {_nearest} to loop-value
+  return {_nearest}
+
+command /resetitemcooldown:
+  permission: sk.command.resetitemcooldown
+  trigger:
+    loop all players:
+      loop {pv.cooldown.%loop-player%::*}:
+        set {pv.cooldown.%loop-player%::%loop-index%} to 0
+        if {pv.cooldown.%loop-player%::%loop-index%} is less than 1:
+          clear {pv.cooldown.%loop-player%::%loop-index%}
+
+every tick:
+  loop all players:
+    loop {pv.cooldown.%loop-player%::*}:
+      # broadcast "%{pv.cooldown.%loop-player%::%loop-index%}%"
+      add -1 to {pv.cooldown.%loop-player%::%loop-index%}
+      if {pv.cooldown.%loop-player%::%loop-index%} is less than 1:
+        clear {pv.cooldown.%loop-player%::%loop-index%}
+
+every tick:
+  loop all players:
+    set loop-player's level to 0
+    loop {pv.cooldown.%loop-player%::*}:
+      if the name of loop-player's tool contains "煙幕":
+        set loop-player's level to {pv.cooldown.%loop-player%::enmaku}
+      if the name of loop-player's tool contains "網":
+        set loop-player's level to {pv.cooldown.%loop-player%::ami}
+      if the name of loop-player's tool contains "モーニングスター":
+        set loop-player's level to {pv.cooldown.%loop-player%::morning_star}
+      if the name of loop-player's tool contains "エンダーパールχ":
+        set loop-player's level to {pv.cooldown.%loop-player%::enderpearl}
+      if the name of loop-player's tool contains "ザ・ワールド":
+        set loop-player's level to {pv.cooldown.%loop-player%::theworld}
+      if the name of loop-player's tool contains "鉤縄":
+        set loop-player's level to {pv.cooldown.%loop-player%::kaginawa}
+      if the name of loop-player's tool contains "運命の矢":
+        set loop-player's level to {pv.cooldown.%loop-player%::destiny_arrow}
+      if the name of loop-player's tool contains "ホークアイ":
+        set loop-player's level to {pv.cooldown.%loop-player%::hawkeye}
+      if the name of loop-player's tool contains "袋":
+        set loop-player's level to {pv.cooldown.%loop-player%::bag}
+      if the name of loop-player's tool contains "デコイベル":
+        set loop-player's level to {pv.cooldown.%loop-player%::decoy_bell}
+      if the name of loop-player's tool contains "時止め時計":
+        set loop-player's level to {pv.cooldown.%loop-player%::time_stopper_clock}
+      if the name of loop-player's tool contains "羅針盤":
+        set loop-player's level to {pv.cooldown.%loop-player%::compass}
+  
+command /giveex <item> <string>:
+  permission: sk.command.giveex
+  trigger:
+    give arg-1 named arg-2 to event-player
+
+command /rename <string>:
+  permission: sk.command.rename
+  trigger:
+    set the name of the player's tool to arg-1
