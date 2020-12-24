@@ -1,0 +1,59 @@
+command /addstage <world> <number> <number> <number> <number>:
+  permission: sk.command.addstage
+  usage: /addstage <world> <center_x> <center_y> <center_z> <respawn_radius>
+  trigger:
+    add arg-1 to {stage::*}
+    set {stage_cx::%arg-1%} to arg-2
+    set {stage_cy::%arg-1%} to arg-3
+    set {stage_cz::%arg-1%} to arg-4
+    set {stage_rr::%arg-1%} to arg-5
+    send "Added stage."
+
+command /getstageinfo <world>:
+  permission: sk.command.getstageinfo
+  usage: /getstageinfo <world>
+  trigger:
+    send "%arg-1% -- cx:%{stage_cx::%arg-1%}% cy:%{stage_cy::%arg-1%}% cz:%{stage_cz::%arg-1%}% rr:%{stage_rr::%arg-1%}%"
+
+command /getstagelist:
+  permission: sk.command.getstagelist
+  usage: /getstagelist
+  trigger:
+    loop {stage::*}:
+      send "%loop-value%"
+
+command /removestage <world>:
+  permission: sk.command.removestage
+  usage: /removestage <world>
+  trigger:
+    remove arg-1 from {stage::*}
+    delete {stage_cx::%arg-1%}
+    delete {stage_cy::%arg-1%}
+    delete {stage_cz::%arg-1%}
+    delete {stage_rr::%arg-1%}
+
+command /selectstage <world>:
+  permission: sk.command.selectstage
+  usage: /selectstage <world>
+  trigger:
+    set {selected_stage} to arg-1
+    broadcast "You have been selected the stage to %{selected_stage}%"
+
+function getSelectedStage() :: world:
+  return {selected_stage}
+
+function getCXOfSelectedStage() :: number:
+  set {_ss} to {selected_stage}
+  return {stage_cx::%{_ss}%}
+
+function getCYOfSelectedStage() :: number:
+  set {_ss} to {selected_stage}
+  return {stage_cy::%{_ss}%}
+
+function getCZOfSelectedStage() :: number:
+  set {_ss} to {selected_stage}
+  return {stage_cz::%{_ss}%}
+
+function getRROfSelectedStage() :: number:
+  set {_ss} to {selected_stage}
+  return {stage_rr::%{_ss}%}

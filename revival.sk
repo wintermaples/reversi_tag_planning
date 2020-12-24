@@ -1,6 +1,6 @@
 on death of player:
   set {_objective} to scoreboard objective "dc"
-  set {_dc} to scoreboard {_objective} score of entry "wintermaples"
-  broadcast "%{_dc}%"
-  if the scoreboard name of the scoreboard team of "%player%" is {RUNNER_TEAM_NAME}:
-    drop 1 turtle egg down the player without velocity
+  # set {_dc} to scoreboard {_objective} score of entry "wintermaples"
+  # broadcast "%{_dc}%"
+  # if the scoreboard name of the scoreboard team of "%player%" is {RUNNER_TEAM_NAME}:
+  #   drop 1 turtle egg down the player without velocity
