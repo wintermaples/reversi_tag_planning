@@ -1,6 +1,9 @@
 function nearestPlayer(p: player) :: player:
   reset {_nearest}
   loop all players in world of {_p}:
+    if loop-player's gamemode is spectator:
+      continue
+    
     if loop-player is not {_p}:
       if {_nearest} is not set:
         set {_nearest} to loop-player
@@ -20,6 +23,33 @@ function nearestMonument(loc: location) :: location:
     if (the distance between {_loc} and loop-value) is less than (the distance between {_loc} and {_nearest}):
       set {_nearest} to loop-value
   return {_nearest}
+
+function nearestPlayerIfNotTeam(p: player, t: string) :: player:
+  reset {_nearest}
+  loop all players in world of {_p}:
+    if loop-player's gamemode is spectator:
+      continue
+
+    if the scoreboard name of the scoreboard team of "%loop-player%" is {_t}:
+      continue
+    
+    if loop-player is not {_p}:
+      if {_nearest} is not set:
+        set {_nearest} to loop-player
+        continue
+      
+      if distance between loop-player and {_p} is less than distance between {_p} and {_nearest}:
+        set {_nearest} to loop-player
+
+  return {_nearest}
+
+function hide_player(p: player):
+  hide {_p}
+  set {hidden_player_list::%{_p}%} to true
+
+function reveal_player(p: player):
+  reveal {_p}
+  set {hidden_player_list::%{_p}%} to false
 
 command /resetitemcooldown:
   permission: sk.command.resetitemcooldown
@@ -66,6 +96,8 @@ every tick:
         set loop-player's level to {pv.cooldown.%loop-player%::time_stopper_clock}
       if the name of loop-player's tool contains "羅針盤":
         set loop-player's level to {pv.cooldown.%loop-player%::compass}
+      if the name of loop-player's tool contains "野生の勘":
+        set loop-player's level to {pv.cooldown.%loop-player%::wild_intuition}
   
 command /giveex <item> <string>:
   permission: sk.command.giveex

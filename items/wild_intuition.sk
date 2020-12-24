@@ -4,23 +4,27 @@ on rightclick holding a emerald:
       if {pv.cooldown.%entity%::wild_intuition} is not set:
         set {pv.cooldown.%entity%::wild_intuition} to {WILD_INTUITION_COOLDOWN}
         play sound "block.portal.travel" with volume 0.25 to event-entity
-        set {_nearestPlayerLoc} to nearestPlayer(event-entity)
-        set {_v1} to vector from event-entity's location
-        set {_v2} to vector from {_nearestPlayerLoc}'s location
-        set {_v} to {_v2} -- {_v1}
 
-        spawn an area effect cloud at location of the entity
-        add "wild_intuition_particle" to the scoreboard tags of the last spawned entity
-        set {_name} to the UUID of the last spawned entity
-        set the name of the last spawned entity to {_name}
+        loop 5 times:
+          set {_nearestPlayerLoc} to nearestPlayerIfNotTeam(event-entity, {KILLER_TEAM_NAME})
+          set {_v1} to vector from event-entity's location
+          set {_v2} to vector from {_nearestPlayerLoc}'s location
+          set {_v} to {_v2} -- {_v1}
 
-        set {_x} to x-coordinate of the last spawned entity's location
-        set {_y} to y-coordinate of the last spawned entity's location
-        set {_z} to z-coordinate of the last spawned entity's location
-        set {_world} to world of the last spawned entity's location
-        teleport the last spawned entity to location({_x},{_y},{_z},{_world},vector yaw of {_v}, vector pitch of {_v})
-        
-        execute the console command "data modify entity @e[name=%{_name}%,limit=1] Duration set value 20b"
-        execute the console command "data modify entity @e[name=%{_name}%,limit=1] Particle set value ""block air"""
+          spawn an area effect cloud at location of the entity
+          add "wild_intuition_particle" to the scoreboard tags of the last spawned entity
+          set {_name} to the UUID of the last spawned entity
+          set the name of the last spawned entity to {_name}
+
+          set {_x} to x-coordinate of the last spawned entity's location
+          set {_y} to y-coordinate of the last spawned entity's location
+          set {_z} to z-coordinate of the last spawned entity's location
+          set {_world} to world of the last spawned entity's location
+          teleport the last spawned entity to location({_x},{_y},{_z},{_world},vector yaw of {_v}, vector pitch of {_v})
+          
+          execute the console command "data modify entity @e[name=%{_name}%,limit=1] Duration set value 20b"
+          execute the console command "data modify entity @e[name=%{_name}%,limit=1] Particle set value ""block air"""
+
+          wait 3 seconds
 
     cancel event

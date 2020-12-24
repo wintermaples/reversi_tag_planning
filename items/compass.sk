@@ -23,3 +23,8 @@ on rightclick holding a trident:
         execute the console command "data modify entity @e[name=%{_name}%,limit=1] Particle set value ""block air"""
 
     cancel event
+
+on leftclick holding a trident:
+  if clicked entity is not set:
+    if name of event-item contains "羅針盤":
+      cancel event

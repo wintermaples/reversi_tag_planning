@@ -55,6 +55,13 @@ function is_monument_placable(loc: location) :: number:
 
   return 1
 
+function players_num_joined_team() :: number:
+  set {_n} to 0
+  loop all players:
+    if the scoreboard team of "%loop-player%" is set:
+      add 1 to {_n}
+  return {_n}
+
 on walking on emerald block:
   if event-entity's gamemode is not spectator:
     if event-block is emerald block:
@@ -99,8 +106,8 @@ command /placemonument <world> <number> <boolean>:
   trigger:
     set {_monuments_addition} to 0
 
-    if online player count is more than 3:
-      set {_monuments_addition} to (online player count - 2) * 6
+    if players_num_joined_team() is more than 3:
+      set {_monuments_addition} to (players_num_joined_team() - 2) * 6
 
     loop {monuments::*}:
       if the world of loop-value is "%arg-1%":

@@ -18,3 +18,4 @@ command /countdown:
     set block at {_location} to redstone_block
     wait 1 seconds
     set block at {_location} to air
+

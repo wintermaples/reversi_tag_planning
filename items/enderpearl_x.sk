@@ -1,18 +1,17 @@
 on rightclick holding a ender pearl:
-  if clicked entity is not set:
-    if name of event-item contains "エンダーパールχ":
+  if name of event-item contains "エンダーパールχ":
+    if clicked entity is not set:
       if {pv.cooldown.%entity%::enderpearl} is not set:
         set {pv.cooldown.%entity%::enderpearl} to {ENDERPEARL_COOLDOWN}
         shoot an ender pearl from the entity at speed 2
         add "ENDERPEARL_%entity%" to the scoreboard tags of the shot projectile
         add "ENDERPEARL" to the scoreboard tags of the shot projectile
         play sound "entity.ender_pearl.throw" at location of the entity
-        cancel event
       else:
         loop all entities:
           if loop-entity has the scoreboard tag "ENDERPEARL_%entity%":
             push loop-entity downwards at speed 5
-        cancel event
+      cancel event
 
 on damage:
   if the damage cause is fall:

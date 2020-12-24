@@ -23,20 +23,21 @@ on rightclick holding a heart of the sea:
           add 5 to {_angle}
       
         loop all players:
-          if loop-player is not the entity:
-            if the distance between loop-player and the entity is smaller than 100:
-              set {_x1} to x-coordinate of the entity
-              set {_z1} to z-coordinate of the entity
-              set {_yaw1} to yaw of the entity
-              set {_x2} to x-coordinate of loop-player
-              set {_z2} to z-coordinate of loop-player
-              set {_yaw2} to yaw of loop-player
-              
-              set {_v1} to vector {_x1}, 0, {_z1}
-              set {_v2} to vector {_x2}, 0, {_z2}
-              set {_v} to normalized ({_v2} -- {_v1})
-              set {_yaw_v} to vector from yaw {_yaw} and pitch 0
-              set {_angle} to acos({_v} dot {_yaw_v})
-              
-              if {_angle} is less than 60:
-                apply potion of glowing without particles to loop-player for 5 seconds
+          if the scoreboard team of "%loop-player%" is not the scoreboard team of "%the entity%":
+            if loop-player is not the entity:
+              if the distance between loop-player and the entity is smaller than 100:
+                set {_x1} to x-coordinate of the entity
+                set {_z1} to z-coordinate of the entity
+                set {_yaw1} to yaw of the entity
+                set {_x2} to x-coordinate of loop-player
+                set {_z2} to z-coordinate of loop-player
+                set {_yaw2} to yaw of loop-player
+                
+                set {_v1} to vector {_x1}, 0, {_z1}
+                set {_v2} to vector {_x2}, 0, {_z2}
+                set {_v} to normalized ({_v2} -- {_v1})
+                set {_yaw_v} to vector from yaw {_yaw} and pitch 0
+                set {_angle} to acos({_v} dot {_yaw_v})
+                
+                if {_angle} is less than 60:
+                  apply potion of glowing without particles to loop-player for 5 seconds

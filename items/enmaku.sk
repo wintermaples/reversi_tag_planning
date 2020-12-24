@@ -9,6 +9,6 @@ on rightclick holding a gunpowder:
         play sound "entity.enderman.teleport" with volume 3.0 and pitch 1.5 at location of the entity
         add "ENMAKU_CLICKED" to the scoreboard tags of the entity
 
-        hide event-entity
+        hide_player(event-entity)
         wait "%{ENMAKU_DURATION}% ticks" parsed as a timespan
-        reveal event-entity
+        reveal_player(event-entity)
