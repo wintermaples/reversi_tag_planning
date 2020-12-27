@@ -1,0 +1,6 @@
+on rightclick holding a honeycomb:
+  if clicked entity is not set:
+    if name of event-item contains "ジャミング":
+      if {pv.cooldown.%entity%::jamming} is not set:
+        set {pv.cooldown.%entity%::jamming} to {JAMMING_COOLDOWN}
+        add "JAMMING_CLICKED" to the scoreboard tags of the entity

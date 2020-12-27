@@ -1,0 +1,23 @@
+on sneak toggle:
+  if event-player's gamemode is creative:
+    exit
+  if event-player has the scoreboard tag "KAGINAWA_USING":
+    exit
+
+  if event-player is not on ground:
+    if {double_jump_cooldown::%event-player%} is more than 0:
+      exit
+
+    set {double_jump_cooldown::%event-player%} to 20*25
+    set x component of event-player's velocity to x component of event-player's velocity * 6
+    set y component of event-player's velocity to 1
+    set z component of event-player's velocity to z component of event-player's velocity * 6
+    play sound "entity.generic.extinguish_fire" with volume 1 and pitch 1.5 at location of event-player
+
+every tick:
+  loop {double_jump_cooldown::*}:
+    if {double_jump_cooldown::%loop-index%} is more than 0:
+      subtract 1 from {double_jump_cooldown::%loop-index%}
+      if {double_jump_cooldown::%loop-index%} is 0:
+        send "§2ダブルジャンプが使用可能になりました!" to loop-index parsed as a player
+        play sound "block.note_block.pling" with volume 1 and pitch 2 at location of loop-index parsed as a player

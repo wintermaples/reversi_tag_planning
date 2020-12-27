@@ -98,6 +98,8 @@ every tick:
         set loop-player's level to {pv.cooldown.%loop-player%::compass}
       if the name of loop-player's tool contains "野生の勘":
         set loop-player's level to {pv.cooldown.%loop-player%::wild_intuition}
+      if the name of loop-player's tool contains "ジャミング":
+        set loop-player's level to {pv.cooldown.%loop-player%::jamming}
   
 command /giveex <item> <string>:
   permission: sk.command.giveex

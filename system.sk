@@ -19,7 +19,7 @@ on inventory click:
 
 on drop:
   if player's gamemode is not creative:
-    delete entity
+    cancel event
 # ####################
 
 every 43 seconds:
@@ -54,3 +54,15 @@ on shoot:
   if the shooter's tool is bow:
     if {hidden_player_list::%shooter%} is true:
       cancel event
+
+# コマンドブロックでできない初期化処理
+command /init:
+  permission: sk.command.init
+  trigger:
+    loop all dropped items:
+      broadcast "%loop-value%"
+      kill loop-value
+    loop all entities:
+      if the type of loop-value is armor stand:
+        broadcast "%loop-value%"
+        kill loop-value

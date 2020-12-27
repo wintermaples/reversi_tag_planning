@@ -1,6 +1,50 @@
 on death of player:
   set {_objective} to scoreboard objective "dc"
-  # set {_dc} to scoreboard {_objective} score of entry "wintermaples"
-  # broadcast "%{_dc}%"
-  # if the scoreboard name of the scoreboard team of "%player%" is {RUNNER_TEAM_NAME}:
-  #   drop 1 turtle egg down the player without velocity
+  set {_dc} to scoreboard number of scoreboard {_objective} score of entry "%event-player%"
+
+  set {_config_objective} to scoreboard objective "config"
+  set {_runner_stock} to scoreboard number of scoreboard {_config_objective} score of entry "runner_stock"
+
+  if the scoreboard name of the scoreboard team of "%player%" is {RUNNER_TEAM_NAME}:
+    # DCがカウント追加される前にイベント処理が走るので-1
+    if {_dc} is {_runner_stock} - 1:
+      drop 1 turtle egg down the player without velocity
+      set the display name of the last dropped item to "%player%"
+
+# 拾ったらリスポ
+on pick up of turtle egg:
+  set {_dc_objective} to scoreboard objective "dc"
+  set {_config_objective} to scoreboard objective "config"
+  set {_runner_stock} to scoreboard number of scoreboard {_config_objective} score of entry "runner_stock"
+
+  # RUNNERじゃなければcancelしてexit
+  if the scoreboard name of the scoreboard team of "%event-player%" is not {RUNNER_TEAM_NAME}:
+    cancel event
+    exit
+  # 拾った人のDeathCountがRunnerStock - 1以上だと、死んでしまうので処理をキャンセル
+  if scoreboard number of scoreboard {_dc_objective} score of entry "%event-player%" is more than {_runner_stock} - 2:
+    cancel event
+    exit
+
+  set {_player_name} to "%the display name of event-entity%"
+  set {_player} to {_player_name} parsed as a player 
+
+  # 1回死ぬのでRunnerStock - 1 - 1
+  set scoreboard number of scoreboard {_dc_objective} score of entry {_player_name} to {_runner_stock} - 2
+  set the gamemode of {_player} to adventure
+  kill {_player}
+
+  add 1 to scoreboard number of scoreboard {_dc_objective} score of entry "%event-player%"
+
+  kill event-entity
+
+  broadcast "%{_player}%が復活しました！"
+  cancel event
+
+every 2 seconds:
+  loop all worlds:
+    set {_world} to loop-value-1
+    loop all dropped items:
+      set {_item} to loop-value-2
+      if the type of {_item} is dropped turtle egg:
+        play sound "block.note_block.xylophone" with volume 1.5 and pitch 1.5 at location of {_item}

@@ -5,6 +5,8 @@ on rightclick holding a gold nugget:
         set {pv.cooldown.%entity%::decoy_bell} to {DECOY_BELL_COOLDOWN}
         set {_loc} to event-player's location
         
-        loop 10 times:
+        wait 5 seconds
+
+        loop 7 times:
           play sound "block.bell.use" in player category with volume 3 and pitch 2 at {_loc}
           wait 1 seconds

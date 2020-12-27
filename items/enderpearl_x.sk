@@ -1,4 +1,4 @@
-on rightclick holding a ender pearl:
+on rightclick holding a slimeball:
   if name of event-item contains "エンダーパールχ":
     if clicked entity is not set:
       if {pv.cooldown.%entity%::enderpearl} is not set:

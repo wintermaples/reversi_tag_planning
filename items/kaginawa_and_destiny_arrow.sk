@@ -11,7 +11,7 @@ on rightclick holding a lead:
     if name of event-item contains "鉤縄":
       if {pv.cooldown.%entity%::kaginawa} is not set:
         set {pv.cooldown.%entity%::kaginawa} to {KAGINAWA_COOLDOWN}
-        make the entity shoot an arrow
+        make the entity shoot an arrow at speed 10
         add "TURIZAO_%entity%" to the scoreboard tags of the shot projectile
 
 on rightclick holding an arrow:
@@ -49,3 +49,10 @@ on projectile hit:
     teleport the shooter of the projectile to location({_x}, {_y}, {_z}, {_world}, {_yaw}, {_pitch})
     wait 1 ticks
     push the shooter of the projectile forwards at speed {_distance} / 5
+    add "KAGINAWA_USING" to the scoreboard tags of the shooter of the projectile
+
+every tick:
+  loop all players:
+    if loop-player is on ground:
+      remove "KAGINAWA_USING" from the scoreboard tags of loop-player
+
