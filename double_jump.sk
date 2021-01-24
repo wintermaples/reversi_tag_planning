@@ -1,5 +1,5 @@
 on sneak toggle:
-  if event-player's gamemode is creative:
+  if event-player's gamemode is not adventure:
     exit
   if event-player has the scoreboard tag "KAGINAWA_USING":
     exit

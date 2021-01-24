@@ -7,7 +7,7 @@ on respawn:
   set {_v} to (a random vector ++ vector -0.5,-0.5,-0.5)
   set {_v} to normalized {_v}
   set {_x} to {_cx} + (x component of {_v} * random number from 0 to {_rr})
-  set {_y} to {_cy}
+  set {_y} to {_cy} + random number from -5 to 5
   set {_z} to {_cz} + (z component of {_v} * random number from 0 to {_rr})
   set {_loc} to location({_x}, {_y}, {_z}, {_ss}, 0, 0)
   set respawn location to {_loc}
@@ -15,3 +15,12 @@ on respawn:
   hide_player(event-entity)
   wait "%{ENMAKU_DURATION}% ticks" parsed as a timespan
   reveal_player(event-entity)
+
+on damage:
+  set {_x} to victim's x-coordinate
+  set {_y} to victim's y-coordinate + 1
+  set {_z} to victim's z-coordinate
+  set {_w} to victim's world
+  set {_loc} to location({_x}, {_y}, {_z}, {_w}, 0, 0)
+  if damage cause is suffocation:
+    teleport the victim to {_loc}

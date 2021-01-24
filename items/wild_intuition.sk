@@ -1,12 +1,19 @@
 on rightclick holding a emerald:
   if clicked entity is not set:
+    
+    set {_TARGET_TEAM_NAME} to ""
+    if the scoreboard name of the scoreboard team of "%player%" is {RUNNER_TEAM_NAME}:
+      set {_TARGET_TEAM_NAME} to {RUNNER_TEAM_NAME}
+    else:
+      set {_TARGET_TEAM_NAME} to {KILLER_TEAM_NAME}
+    
     if name of event-item contains "野生の勘":
       if {pv.cooldown.%entity%::wild_intuition} is not set:
         set {pv.cooldown.%entity%::wild_intuition} to {WILD_INTUITION_COOLDOWN}
         play sound "block.portal.travel" with volume 0.25 to event-entity
 
         loop 5 times:
-          set {_nearestPlayerLoc} to nearestPlayerIfNotTeam(event-entity, {KILLER_TEAM_NAME})
+          set {_nearestPlayerLoc} to nearestPlayerIfNotTeam(event-entity, {_TARGET_TEAM_NAME})
           set {_v1} to vector from event-entity's location
           set {_v2} to vector from {_nearestPlayerLoc}'s location
           set {_v} to {_v2} -- {_v1}

@@ -47,4 +47,4 @@ every 2 seconds:
     loop all dropped items:
       set {_item} to loop-value-2
       if the type of {_item} is dropped turtle egg:
-        play sound "block.note_block.xylophone" with volume 1.5 and pitch 1.5 at location of {_item}
+        play sound "block.note_block.xylophone" with volume 2 and pitch 1.5 at location of {_item}

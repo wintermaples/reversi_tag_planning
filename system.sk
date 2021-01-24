@@ -1,6 +1,7 @@
 # 満腹度による回復を禁止
-on hunger meter change:
-  set food level of the player to 5
+every 1 seconds:
+  loop all players:
+    set food level of loop-player to 5
 
 # 矢が残るのを防止
 on projectile hit:
@@ -18,6 +19,12 @@ on inventory click:
     cancel event
 
 on drop:
+  # ゲームが始まっていないときは落とせるようにする(giveコマンドが二重にアイテムを渡してしまうのを防止)
+  set {_variables_objective} to scoreboard objective "variables"
+  set {_game_state} to scoreboard number of scoreboard {_variables_objective} score of entry "game_state"
+  if {_game_state} is 0:
+    exit
+
   if player's gamemode is not creative:
     cancel event
 # ####################
@@ -32,6 +39,11 @@ every 43 seconds:
 
 # Creative以外でのブロック設置禁止
 on place:
+  if player's gamemode is not creative:
+    cancel event
+
+# Creative以外でのブロック破壊禁止
+on break:
   if player's gamemode is not creative:
     cancel event
 
@@ -60,9 +72,14 @@ command /init:
   permission: sk.command.init
   trigger:
     loop all dropped items:
-      broadcast "%loop-value%"
       kill loop-value
     loop all entities:
       if the type of loop-value is armor stand:
-        broadcast "%loop-value%"
         kill loop-value
+
+# プレイヤー以外をなぐるの禁止
+on damage:
+  if attacker's gamemode is creative:
+    exit
+  if victim is not player:
+    cancel event

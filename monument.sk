@@ -10,23 +10,17 @@ function is_monument_placable(loc: location) :: number:
   set {_z} to z-coordinate of {_loc}
   set {_world} to world of {_loc}
 
-  if the block below {_loc} is grass block:
-    return 0
   if the block below {_loc} is water:
     return 0
   if the block below {_loc} is air:
     return 0
   if the block below {_loc} is stairs:
     return 0
-  if the block below {_loc} is slab:
-    return 0
   if the block below {_loc} is trapdoor:
     return 0
   if the block below {_loc} is sign:
     return 0
   if the block below {_loc} is flower:
-    return 0
-  if the block below {_loc} is leaves:
     return 0
   if the block below {_loc} is torch:
     return 0
@@ -50,7 +44,7 @@ function is_monument_placable(loc: location) :: number:
     add 1 to {_sideblockcount}
   if the block at location({_x}, {_y}, {_z} - 1, {_world}) is not air:
     add 1 to {_sideblockcount}
-  if {_sideblockcount} is 0:
+  if {_sideblockcount} is less than 2:
     return 0
 
   return 1
@@ -146,16 +140,18 @@ command /placemonument <world> <number> <boolean>:
     execute console command "scoreboard players set monument_num variables %arg-2 + {_monuments_addition}%"
 
 
-command /placemonument_base <number> <number>:
+command /placemonument_base <number> <number> <number>:
   permission: sk.command.placemonument_base
+  usage: /placeallmonuments_base <radius> <count> <height>
   trigger:
     set {_i} to arg-2
     set {_retry} to arg-2 * 200
     while {_i} is more than 0:
       set {_v} to (a random vector ++ vector -0.5,-0.5,-0.5)
+      set y component of {_v} to 0
       set {_v} to normalized {_v}
       set {_x} to x-coordinate of sender's location + (x component of {_v} * random number from 0 to arg-1)
-      set {_y} to y-coordinate of sender's location + (random number from -10 to 10)
+      set {_y} to y-coordinate of sender's location + (random number from (-1)*arg-3 to arg-3)
       set {_z} to z-coordinate of sender's location + (z component of {_v} * random number from 0 to arg-1)
       set {_world} to the world of sender's location
       set {_loc} to location(round({_x})+0.5, round({_y})+0.5, round({_z})+0.5, {_world})
@@ -178,10 +174,8 @@ command /removeallmonuments_base:
     loop {monuments::*}:
       if the world of sender's location is loop-value's world:
         add loop-value to {_wm::*}
-        wait 1 ticks
       
       loop {_wm::*}:
         remove loop-value-2 from {monuments::*}
         remove loop-value-2 from {_wm::*}
         send "Removed: %loop-value-2% -- %size of {_wm::*}%"
-        wait 1 ticks
